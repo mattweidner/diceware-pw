@@ -13,22 +13,14 @@ import (
 	"crypto/rand"
 )
 
-func dice_roll() int {
-	r, err := rand.Int(rand.Reader, big.NewInt(7775))
+var version string
+
+func dice_roll(max int64) int {
+	r, err := rand.Int(rand.Reader, big.NewInt(max))
 	if err != nil {
 		fmt.Println("Error generating random number..")
 	}
 	return int(r.Int64() + 1)
-}
-
-func test_all() {
-	fmt.Println("Testing dice_roll...", dice_roll())
-	fmt.Println("Testing dice_roll...", dice_roll())
-	_, err := read_wordlist("wordlists/beale.diceware.wordlist.asc")
-	if err != nil {
-		fmt.Println("read_wordlist()... Fail")
-	}
-	fmt.Println("read_wordlist()... Success")
 }
 
 func read_wordlist(wordlist string) ([]string, error) {
@@ -45,18 +37,20 @@ func read_wordlist(wordlist string) ([]string, error) {
 }
 
 func main() {
-	//test_all()
-	fmt.Println("-----------------------------------------")
+	fmt.Println("Random passphrase generator", version)
+	fmt.Println("--------------------------------------------")
 	fmt.Println("Generating passphrases...")
-	fmt.Println("-----------------------------------------")
-	word_bank, err := read_wordlist("wordlists/beale.diceware.wordlist.asc")
+	fmt.Println("--------------------------------------------")
+	//word_bank, err := read_wordlist("wordlists/beale.diceware.wordlist.asc")
+	//word_bank, err := read_wordlist("wordlists/eff_large_wordlist.txt")
+	word_bank, err := read_wordlist("wordlists/google-20000-english.txt")
 	if err != nil {
 		fmt.Println(err)
 	}
-	const PHRASE_LENGTH int = 6
+	const PHRASE_LENGTH int = 7
 	for i := 0; i < 10; i++ {
 		for j := PHRASE_LENGTH; j > 0; j-- {
-			var word_index int = dice_roll()
+			var word_index int = dice_roll(int64(len(word_bank)))
 			print(strings.ToUpper(word_bank[word_index]), " ")
 		}
 		print("\n")
